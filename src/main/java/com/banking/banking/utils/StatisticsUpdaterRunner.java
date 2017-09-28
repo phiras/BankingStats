@@ -18,6 +18,5 @@ public class StatisticsUpdaterRunner implements CommandLineRunner {
 //      I used this scheduler that controls the thread to do its job once a second (massive performance saving)
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(statisticsUpdater, 1, 1, TimeUnit.SECONDS);
-        System.out.println("sucsessssssssssssss");
     }
 }
