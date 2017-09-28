@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UpdaterIntegrationTests {
 
     //    public static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
-    public static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
+    private static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
 
     private TransactionsStatistics transactionsStatistics = TransactionsStatistics.getInstance();
 
@@ -31,8 +31,9 @@ public class UpdaterIntegrationTests {
      * 1- one is valid for 60 seconds
      * 2- the other is valid for 5 seconds only ( to make this test faster so it doesn't have to wait 60 seconds )
      *
+     * result: after waiting for 6 seconds, only one of the transactions ( transaction 2 ) was deleted
+     *
      * @throws InterruptedException
-     * @result after waiting for 6 seconds, only one of the transactions ( transaction 2 ) was deleted
      */
     @Test
     public void shouldRemoveTransactionsAfterExpiration() throws InterruptedException {
@@ -45,7 +46,7 @@ public class UpdaterIntegrationTests {
 
         long countBefore = transactionsStatistics.getCount();
 //      waiting to for the transaction 2 to be deleted
-        TimeUnit.SECONDS.sleep(6);
+        TimeUnit.SECONDS.sleep(8);
 
         long countAfter = transactionsStatistics.getCount();
         assertThat(countBefore).isEqualTo(countAfter + 1);
