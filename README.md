@@ -4,6 +4,7 @@
 
 1. In the base directory of banking folder run maven command  `mvn package`
 2. Navigate to ../banking/target and run the .jar file
+3. tests will fail if localhost:8080 port was occupied, please make sure its free.
 
 ## Notes:
 1. To achieve O(1) for the /transactions endpoint I had to choose the LinkedList because ArrayList can't guarantee a O(1) for each insertion at the end of it (since it has to automatically double it's size once the array is full).
