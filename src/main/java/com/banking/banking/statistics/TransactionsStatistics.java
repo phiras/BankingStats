@@ -75,7 +75,7 @@ public class TransactionsStatistics {
      * if no instance of TransactionStatistics exists it will create new one
      * otherwise it will return the existing instance
      *
-     * @return an instance of TransactionsStatistics
+     * @return TransactionsStatistics: an instance of TransactionsStatistics
      */
     public static synchronized TransactionsStatistics getInstance() {
         if (instance == null) {
@@ -90,7 +90,7 @@ public class TransactionsStatistics {
      * its a good clean way to clean up the controller from having more code to check if
      * the time of the transaction is valid
      *
-     * @param transaction transaction to be registered to be internally check fro validity
+     * @param transaction: transaction to be registered to be internally check fro validity
      * @return false if instance was older that 1 min and true if not.
      */
     public synchronized boolean registerTransaction(Transaction transaction) {
@@ -120,7 +120,7 @@ public class TransactionsStatistics {
     /**
      * adds a transaction and calculates the new status of the statistics related fields and updates them
      *
-     * @param transaction transaction to add to transactionsList
+     * @param transaction: transaction to add to transactionsList
      */
     private synchronized void addTransaction(Transaction transaction) {
         transactionsOfLastMinute.add(0, transaction);
@@ -138,7 +138,7 @@ public class TransactionsStatistics {
     /**
      * removes a transaction and calculates the new status of the statistics related fields and updates them
      *
-     * @param amount the amount of the deleted transaction
+     * @param amount: the amount of the deleted transaction
      */
     private synchronized void updateStateAfterRemovingTransaction(double amount) {
         count -= 1;
@@ -163,7 +163,7 @@ public class TransactionsStatistics {
     /**
      * convenience method to get the Transaction with the highest amount value
      *
-     * @return double the amount from the highest transaction
+     * @return double: the amount from the highest transaction
      */
     private synchronized double getMaxTransaction() {
         double maxAmount = 0;
@@ -178,7 +178,7 @@ public class TransactionsStatistics {
     /**
      * convenience method to get the Transaction with the lowest amount value
      *
-     * @return minimum amount of transaction from transactions
+     * @return double: minimum amount of transaction from transactions
      */
     private synchronized double getMinTransaction() {
         double minAmount = Double.POSITIVE_INFINITY;
