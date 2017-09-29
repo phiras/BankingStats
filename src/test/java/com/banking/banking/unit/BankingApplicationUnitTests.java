@@ -24,11 +24,11 @@ public class BankingApplicationUnitTests {
     @Autowired
     private BankingApplication context;
 
-    public static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionsStatistics.MINUTE_IN_MILL_SECONDS;
+    private static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionsStatistics.MINUTE_IN_MILL_SECONDS;
 
-    public static final Transaction OLD_TRANSACTION = new Transaction(3000, new Date(ONE_MINUTE_AGO));
-    public static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
-    public static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
+    private static final Transaction OLD_TRANSACTION = new Transaction(3000, new Date(ONE_MINUTE_AGO));
+    private static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
+    private static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
 
     private TransactionsStatistics transactionsStatistics = TransactionsStatistics.getInstance();
 
@@ -54,7 +54,7 @@ public class BankingApplicationUnitTests {
      * @result Not Registered
      */
     @Test
-    public void shouldNotRegisterOldTransactions() {
+    public void When_RegisteringTransactionMoreThan60SecOld_ShouldNot_BeRegistered() {
         boolean registered = transactionsStatistics.registerTransaction(OLD_TRANSACTION);
         long count = transactionsStatistics.getCount();
 
@@ -67,7 +67,7 @@ public class BankingApplicationUnitTests {
      * @result Transaction registered
      */
     @Test
-    public void shouldRegisterNewTransaction() {
+    public void When_RegisteringTransactionLessThan60SecOld_Should_BeRegistered() {
         boolean registered = transactionsStatistics.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
 
         long count = transactionsStatistics.getCount();
@@ -80,7 +80,7 @@ public class BankingApplicationUnitTests {
      * @resullt all valid and correct
      */
     @Test
-    public void statisticsFieldsValuesShouldBeCorrect() {
+    public void When_AddingTwoValidTransactions_Expect_CorrectStatistics() {
         transactionsStatistics.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
         transactionsStatistics.registerTransaction(NEW_TRANSACTION_MAX_AMOUNT);
         double sum = NEW_TRANSACTION_MIN_AMOUNT.getAmount() + NEW_TRANSACTION_MAX_AMOUNT.getAmount();

@@ -36,7 +36,7 @@ public class UpdaterIntegrationTests {
      * @throws InterruptedException
      */
     @Test
-    public void shouldRemoveTransactionsAfterExpiration() throws InterruptedException {
+    public void When_TransactionIsOlderThan60Sec_Should_BeAutomaticallyRemoved() throws InterruptedException {
 //      getting the UTC time in milliseconds 55 seconds ago
         long fiftyFiveSecondsAgo = System.currentTimeMillis() - 55000;
         Transaction transactionExpiresIn5Seconds = new Transaction(2000, new Date(fiftyFiveSecondsAgo));

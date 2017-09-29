@@ -33,13 +33,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class BankingRestControllerTests {
 
-    public static final String TRANSACTIONS_END_PONT = "/transactions";
-    public static final String STATISTICS_END_PONT = "/statistics";
+    private static final String TRANSACTIONS_END_PONT = "/transactions";
+    private static final String STATISTICS_END_PONT = "/statistics";
 
-    public static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionsStatistics.MINUTE_IN_MILL_SECONDS;
-    public static final Transaction OLD_TRANSACTION = new Transaction(3000, new Date(ONE_MINUTE_AGO));
-    public static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
-    public static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
+    private static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionsStatistics.MINUTE_IN_MILL_SECONDS;
+    private static final Transaction OLD_TRANSACTION = new Transaction(3000, new Date(ONE_MINUTE_AGO));
+    private static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
+    private static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
 
     private TransactionsStatistics transactionsStatistics = TransactionsStatistics.getInstance();
 
@@ -53,6 +53,8 @@ public class BankingRestControllerTests {
 
     /**
      * flushes the statistics and adds the test objects before each test.
+     * 1. the first is new valid with lower amount
+     * 2. the second is new valid with higher amount
      */
     @Before
     public void resetStatistics() {
@@ -68,7 +70,7 @@ public class BankingRestControllerTests {
      * @result response status 204 (No Content)
      */
     @Test
-    public void postOldTransaction() throws Exception {
+    public void When_PostingOldTransaction_Should_GetNoContentStatus() throws Exception {
         mvc.perform(post(TRANSACTIONS_END_PONT)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(OLD_TRANSACTION)))
@@ -76,25 +78,36 @@ public class BankingRestControllerTests {
     }
 
     /**
-     * get request to get statistics
-     *
      * @throws Exception
-     * @result STATUS 200 (OK)
+     * @result response status 201 ( Created )
      */
     @Test
-    public void getStatistics() throws Exception {
-        mvc.perform(get(STATISTICS_END_PONT)).andExpect(status().isOk());
+    public void When_PostingNewValidTransaction_Should_GetCreatedStatus() throws Exception {
+        mvc.perform(post(TRANSACTIONS_END_PONT)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(NEW_TRANSACTION_MAX_AMOUNT)))
+                .andExpect(status().isCreated());
     }
 
     /**
      * get request to get statistics
      *
-     * @result should get a json with the correct result ( since we have two current transactions )
-     *
      * @throws Exception
+     * @result status 200 (OK)
      */
     @Test
-    public void postNewTransaction() throws Exception {
+    public void When_GettingStatistics_Should_GetIsOKStatus() throws Exception {
+        mvc.perform(get(STATISTICS_END_PONT)).andExpect(status().isOk());
+    }
+
+    /**
+     * GET request to get statistics
+     *
+     * @throws Exception
+     * @result should get a json with the correct result ( since we have two current transactions )
+     */
+    @Test
+    public void When_GettingStatistics_Should_GetCorrectJsonResponse() throws Exception {
 
         MvcResult result = mvc.perform(get(STATISTICS_END_PONT).accept(APPLICATION_JSON_UTF8)).andReturn();
 
