@@ -4,15 +4,16 @@ import com.banking.banking.model.Transaction;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * A Singleton-ThreadSafe class that contains the stat of transactions statistics of the last min
- *
+ * <p>
  * using the singleton design pattern One cannot use the constructor but the static method getInstance
- *
+ * <p>
  * with @XmoRootElement annotation and having getters only for the statistics related fields, spring will automatically
- *  include only these fields
+ * include only these fields
  *
  * @author Mohamad Alaloush
  */
@@ -38,9 +39,9 @@ public class TransactionsStatistics {
         this.avg = 0;
         this.max = 0;
         this.min = 0;
-        this.transactionsOfLastMinute = new ArrayList<>();
+        this.transactionsOfLastMinute = new LinkedList<>();
     }
-//  =========== GETTERS ONLY FOR THE STATISTICS RELATED FIELDS ========
+
     public double getSum() {
         return sum;
     }
@@ -61,14 +62,15 @@ public class TransactionsStatistics {
         return count;
     }
 
-    public  synchronized void resetStatistics(){
+    public synchronized void resetStatistics() {
         this.sum = 0;
         this.count = 0;
         this.avg = 0;
         this.max = 0;
         this.min = 0;
-        this.transactionsOfLastMinute = new ArrayList<>();
+        this.transactionsOfLastMinute.clear();
     }
+
     /**
      * if no instance of TransactionStatistics exists it will create new one
      * otherwise it will return the existing instance
@@ -121,7 +123,7 @@ public class TransactionsStatistics {
      * @param transaction transaction to add to transactionsList
      */
     private synchronized void addTransaction(Transaction transaction) {
-        transactionsOfLastMinute.add(transaction);
+        transactionsOfLastMinute.add(0, transaction);
 
         double amount = transaction.getAmount();
         count += 1;
