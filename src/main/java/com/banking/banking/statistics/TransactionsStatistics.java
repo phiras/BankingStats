@@ -24,7 +24,7 @@ public class TransactionsStatistics {
 
     public static final long MINUTE_IN_MILL_SECONDS = 60000;
 
-    private List<Transaction> transactionsOfLastMinute;
+    private LinkedList<Transaction> transactionsOfLastMinute;
 
     //  statistics related fields
     private double sum;
@@ -123,7 +123,7 @@ public class TransactionsStatistics {
      * @param transaction: transaction to add to transactionsList
      */
     private synchronized void addTransaction(Transaction transaction) {
-        transactionsOfLastMinute.add(0, transaction);
+        transactionsOfLastMinute.addFirst(transaction);
 
         double amount = transaction.getAmount();
         count += 1;
