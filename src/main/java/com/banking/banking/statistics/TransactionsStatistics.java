@@ -3,9 +3,7 @@ package com.banking.banking.statistics;
 import com.banking.banking.model.Transaction;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A Singleton-ThreadSafe class that contains the stat of transactions statistics of the last min
