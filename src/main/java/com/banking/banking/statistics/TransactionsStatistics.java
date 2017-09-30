@@ -75,9 +75,11 @@ public class TransactionsStatistics {
      *
      * @return TransactionsStatistics: an instance of TransactionsStatistics
      */
-    public static synchronized TransactionsStatistics getInstance() {
+    public static TransactionsStatistics getInstance() {
         if (instance == null) {
-            instance = new TransactionsStatistics();
+            synchronized (TransactionsStatistics.class) {
+                instance = new TransactionsStatistics();
+            }
         }
         return instance;
     }
@@ -91,11 +93,13 @@ public class TransactionsStatistics {
      * @param transaction: transaction to be registered to be internally check fro validity
      * @return false if instance was older that 1 min and true if not.
      */
-    public synchronized boolean registerTransaction(Transaction transaction) {
+    public boolean registerTransaction(Transaction transaction) {
         long now = System.currentTimeMillis();
 //      TODO : remove this print out
         if (now - transaction.getTimestamp().getTime() <= MINUTE_IN_MILL_SECONDS) {
-            addTransaction(transaction);
+            synchronized (transactionsOfLastMinute) {
+                addTransaction(transaction);
+            }
             return true;
         }
         return false;
@@ -104,12 +108,14 @@ public class TransactionsStatistics {
     /**
      * removes expired transactions from the transactionsOfLastMinute list that are older the 1 min
      */
-    public synchronized void refreshState() {
+    public void refreshState() {
         long now = System.currentTimeMillis();
         for (int i = 0; i < transactionsOfLastMinute.size(); i++) {
             if (now - transactionsOfLastMinute.get(i).getTimestamp().getTime() > MINUTE_IN_MILL_SECONDS) {
-                double amount = transactionsOfLastMinute.remove(i).getAmount();
-                updateStateAfterRemovingTransaction(amount);
+                synchronized (transactionsOfLastMinute) {
+                    double amount = transactionsOfLastMinute.remove(i).getAmount();
+                    updateStateAfterRemovingTransaction(amount);
+                }
             }
 
         }
@@ -120,7 +126,8 @@ public class TransactionsStatistics {
      *
      * @param transaction: transaction to add to transactionsList
      */
-    private synchronized void addTransaction(Transaction transaction) {
+
+    private void addTransaction(Transaction transaction) {
         transactionsOfLastMinute.addFirst(transaction);
 
         double amount = transaction.getAmount();
@@ -138,7 +145,7 @@ public class TransactionsStatistics {
      *
      * @param amount: the amount of the deleted transaction
      */
-    private synchronized void updateStateAfterRemovingTransaction(double amount) {
+    private void updateStateAfterRemovingTransaction(double amount) {
         count -= 1;
         sum = sum - amount;
         if (count != 0)
@@ -163,7 +170,7 @@ public class TransactionsStatistics {
      *
      * @return double: the amount from the highest transaction
      */
-    private synchronized double getMaxTransaction() {
+    private double getMaxTransaction() {
         double maxAmount = 0;
         for (Transaction transaction : transactionsOfLastMinute) {
             double amount = transaction.getAmount();
@@ -178,7 +185,7 @@ public class TransactionsStatistics {
      *
      * @return double: minimum amount of transaction from transactions
      */
-    private synchronized double getMinTransaction() {
+    private double getMinTransaction() {
         double minAmount = Double.POSITIVE_INFINITY;
         for (Transaction transaction : transactionsOfLastMinute) {
             double amount = transaction.getAmount();
