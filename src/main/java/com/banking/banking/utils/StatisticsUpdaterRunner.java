@@ -1,5 +1,8 @@
 package com.banking.banking.utils;
 
+import com.banking.banking.statistics.Refreshable;
+import com.banking.banking.statistics.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -9,14 +12,16 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class StatisticsUpdaterRunner implements CommandLineRunner {
-    @Override
-    public void run(String...args) throws Exception {
-        //      running the thread that will run the updater in parallel right after loading the context
-        StatisticsUpdater statisticsUpdater = new StatisticsUpdater();
+    /**
+     * THIS FIELD ONLY EXPOSES THE refreshState function
+     */
+    @Autowired
+    private Refreshable transactionService;
 
-//      instead of running the thread with an internal infinite while loop that would be very expensive
-//      I used this scheduler that controls the thread to do its job once a second (massive performance saving)
+    @Override
+    public void run(String... args) throws Exception {
+//      scheduling the task of refreshing the state of the transaction service to run every 50 millSec on separate thread
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(statisticsUpdater, 1, 1, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(transactionService::refreshState, 0, 50, TimeUnit.MILLISECONDS);
     }
 }

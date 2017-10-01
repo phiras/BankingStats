@@ -13,13 +13,12 @@ import java.util.Date;
 public class Transaction {
 
     private double amount;
-
     private Date timestamp;
 
     /**
-     * this default constructor is essential for spring to work properly
+     * this default constructor is essential for spring to automatically turn POJO to JSON and vice-versa
      */
-    public Transaction(){
+    public Transaction() {
 
     }
 

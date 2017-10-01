@@ -2,7 +2,7 @@ package com.banking.banking.unit;
 
 import com.banking.banking.BankingApplication;
 import com.banking.banking.model.Transaction;
-import com.banking.banking.statistics.TransactionsStatistics;
+import com.banking.banking.statistics.TransactionServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +24,14 @@ public class BankingApplicationUnitTests {
     @Autowired
     private BankingApplication context;
 
-    private static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionsStatistics.MINUTE_IN_MILL_SECONDS;
+    private static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionServiceImpl.MINUTE_IN_MILL_SECONDS;
 
     private static final Transaction OLD_TRANSACTION = new Transaction(3000, new Date(ONE_MINUTE_AGO));
     private static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
     private static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
 
-    private TransactionsStatistics transactionsStatistics = TransactionsStatistics.getInstance();
+    @Autowired
+    private TransactionServiceImpl transactionServiceImpl;
 
 
     //   testing that the context is loaded
@@ -46,7 +47,7 @@ public class BankingApplicationUnitTests {
      */
     @Before
     public void flushStatistics() {
-        transactionsStatistics.resetStatistics();
+        transactionServiceImpl.resetStatistics();
     }
 
     /**
@@ -55,22 +56,21 @@ public class BankingApplicationUnitTests {
      */
     @Test
     public void When_RegisteringTransactionMoreThan60SecOld_ShouldNot_BeRegistered() {
-        boolean registered = transactionsStatistics.registerTransaction(OLD_TRANSACTION);
-        long count = transactionsStatistics.getCount();
+        boolean registered = transactionServiceImpl.registerTransaction(OLD_TRANSACTION);
+        long count = transactionServiceImpl.getStatistics().getCount();
 
         assertThat(registered).isEqualTo(false);
         assertThat(count).isEqualTo(0);
     }
-
     /**
      * register a transaction that is less than 60 seconds old
      * @result Transaction registered
      */
     @Test
     public void When_RegisteringTransactionLessThan60SecOld_Should_BeRegistered() {
-        boolean registered = transactionsStatistics.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
+        boolean registered = transactionServiceImpl.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
 
-        long count = transactionsStatistics.getCount();
+        long count = transactionServiceImpl.getStatistics().getCount();
         assertThat(registered).isEqualTo(true);
         assertThat(count).isEqualTo(1);
     }
@@ -81,20 +81,20 @@ public class BankingApplicationUnitTests {
      */
     @Test
     public void When_AddingTwoValidTransactions_Expect_CorrectStatistics() {
-        transactionsStatistics.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
-        transactionsStatistics.registerTransaction(NEW_TRANSACTION_MAX_AMOUNT);
+        transactionServiceImpl.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
+        transactionServiceImpl.registerTransaction(NEW_TRANSACTION_MAX_AMOUNT);
         double sum = NEW_TRANSACTION_MIN_AMOUNT.getAmount() + NEW_TRANSACTION_MAX_AMOUNT.getAmount();
         double avg = sum / 2;
         double min = NEW_TRANSACTION_MIN_AMOUNT.getAmount();
         double max = NEW_TRANSACTION_MAX_AMOUNT.getAmount();
 
-        long count = transactionsStatistics.getCount();
+        long count = transactionServiceImpl.getStatistics().getCount();
 
         assertThat(count).isEqualTo(2);
-        assertThat(sum).isEqualTo(transactionsStatistics.getSum());
-        assertThat(avg).isEqualTo(transactionsStatistics.getAvg());
-        assertThat(min).isEqualTo(transactionsStatistics.getMin());
-        assertThat(max).isEqualTo(transactionsStatistics.getMax());
+        assertThat(sum).isEqualTo(transactionServiceImpl.getStatistics().getSum());
+        assertThat(avg).isEqualTo(transactionServiceImpl.getStatistics().getAvg());
+        assertThat(min).isEqualTo(transactionServiceImpl.getStatistics().getMin());
+        assertThat(max).isEqualTo(transactionServiceImpl.getStatistics().getMax());
     }
 
 }
