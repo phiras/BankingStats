@@ -127,7 +127,7 @@ public class TransactionsStatistics {
      * @param transaction: transaction to add to transactionsList
      */
 
-    private void addTransaction(Transaction transaction) {
+    private synchronized void addTransaction(Transaction transaction) {
         transactionsOfLastMinute.addFirst(transaction);
 
         double amount = transaction.getAmount();
@@ -145,7 +145,7 @@ public class TransactionsStatistics {
      *
      * @param amount: the amount of the deleted transaction
      */
-    private void updateStateAfterRemovingTransaction(double amount) {
+    private synchronized void updateStateAfterRemovingTransaction(double amount) {
         count -= 1;
         sum = sum - amount;
         if (count != 0)
