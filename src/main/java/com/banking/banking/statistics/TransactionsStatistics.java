@@ -97,9 +97,7 @@ public class TransactionsStatistics {
         long now = System.currentTimeMillis();
 //      TODO : remove this print out
         if (now - transaction.getTimestamp().getTime() <= MINUTE_IN_MILL_SECONDS) {
-            synchronized (transactionsOfLastMinute) {
                 addTransaction(transaction);
-            }
             return true;
         }
         return false;
