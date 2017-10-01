@@ -1,7 +1,7 @@
 package com.banking.banking.integration;
 
 import com.banking.banking.model.Transaction;
-import com.banking.banking.statistics.TransactionsStatistics;
+import com.banking.banking.statistics.TransactionServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
@@ -36,19 +36,19 @@ public class BankingRestControllerTests {
     private static final String TRANSACTIONS_END_PONT = "/transactions";
     private static final String STATISTICS_END_PONT = "/statistics";
 
-    private static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionsStatistics.MINUTE_IN_MILL_SECONDS;
+    private static final long ONE_MINUTE_AGO = System.currentTimeMillis() - TransactionServiceImpl.MINUTE_IN_MILL_SECONDS;
     private static final Transaction OLD_TRANSACTION = new Transaction(3000, new Date(ONE_MINUTE_AGO));
     private static final Transaction NEW_TRANSACTION_MIN_AMOUNT = new Transaction(1000, new Date());
     private static final Transaction NEW_TRANSACTION_MAX_AMOUNT = new Transaction(4000, new Date());
-
-    private TransactionsStatistics transactionsStatistics = TransactionsStatistics.getInstance();
+    @Autowired
+    private TransactionServiceImpl transactionServiceImpl;
 
     //  mock object to send requests to the controller
     @Autowired
     private MockMvc mvc;
 
     //  to map objects to json and back
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
 
     /**
@@ -58,9 +58,9 @@ public class BankingRestControllerTests {
      */
     @Before
     public void resetStatistics() {
-        transactionsStatistics.resetStatistics();
-        transactionsStatistics.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
-        transactionsStatistics.registerTransaction(NEW_TRANSACTION_MAX_AMOUNT);
+        transactionServiceImpl.resetStatistics();
+        transactionServiceImpl.registerTransaction(NEW_TRANSACTION_MIN_AMOUNT);
+        transactionServiceImpl.registerTransaction(NEW_TRANSACTION_MAX_AMOUNT);
     }
 
     /**
