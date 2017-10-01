@@ -1,4 +1,6 @@
 # BankingStats Rest-API with spring Challenge
+# important:
+1. I kept modifying and enhacing the design (on the same concepts) even after the deadline , please feel free to browse through the history of commits.
 
 # Getting Started
 
