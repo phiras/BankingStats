@@ -49,20 +49,24 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
     /**
      * resets the state of the transactionService ( useful when Testing)
      */
-    public synchronized void resetStatistics() {
-        statistics.clear();
-        transactionsOfLastMinute.clear();
+    public void resetStatistics() {
+        synchronized (TransactionServiceImpl.class) {
+            statistics.clear();
+            transactionsOfLastMinute.clear();
+        }
     }
 
     /**
      * removes expired transactions from the transactionsOfLastMinute list that are older the 1 min
      */
-    public synchronized void refreshState() {
+    public void refreshState() {
         for (int i = 0; i < transactionsOfLastMinute.size(); i++) {
             long now = System.currentTimeMillis();
             if (now - transactionsOfLastMinute.get(i).getTimestamp().getTime() > MINUTE_IN_MILL_SECONDS) {
-                double amount = transactionsOfLastMinute.remove(i).getAmount();
-                removeAmount(amount);
+                synchronized (TransactionServiceImpl.class) {
+                    double amount = transactionsOfLastMinute.remove(i).getAmount();
+                    removeAmount(amount);
+                }
             }
         }
     }
@@ -73,11 +77,12 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      * @param transaction: transaction to add to transactionsList
      */
 
-    private synchronized void addTransaction(Transaction transaction) {
-        double amount = transaction.getAmount();
-        transactionsOfLastMinute.addFirst(transaction);
-        addAmount(amount);
-
+    private void addTransaction(Transaction transaction) {
+        synchronized (TransactionServiceImpl.class) {
+            double amount = transaction.getAmount();
+            transactionsOfLastMinute.addFirst(transaction);
+            addAmount(amount);
+        }
     }
 
 
@@ -117,7 +122,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      *
      * @param amount : the amount of the deleted transaction
      */
-    private synchronized void addAmount(double amount) {
+    private void addAmount(double amount) {
         long newCount = statistics.getCount() + 1;
         double newSum = statistics.getSum() + amount;
         double newAvg = newSum / newCount;
