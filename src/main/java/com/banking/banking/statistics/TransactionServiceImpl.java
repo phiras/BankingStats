@@ -16,7 +16,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
 
     public static final long MINUTE_IN_MILL_SECONDS = 60000;
 
-    private static LinkedList<Transaction> transactionsOfLastMinute = new LinkedList<>();
+    private static LinkedList<Transaction> transactionsOfLastMinute = new LinkedList<Transaction>();
     private static Statistics statistics = new Statistics();
 
     /**
@@ -42,6 +42,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      *
      * @return statistics
      */
+    // why do you create anew obect ?? just return the statistics object ..
     public Statistics getStatistics() {
         return new Statistics(statistics);
     }
@@ -142,6 +143,8 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      * @return double: the amount from the highest transaction
      */
     private double getAmountOfMaxTransaction() {
+         // this is not good, youhave already the statistic calculated why do you have to loop over the list again ???
+        //return statistics.getMax();
         double maxAmount = 0;
         for (Transaction transaction : transactionsOfLastMinute) {
             double amount = transaction.getAmount();
@@ -157,6 +160,8 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      * @return double: minimum amount of transaction from transactions
      */
     private double getAmountOfMinTransaction() {
+        // this is not good, youhave already the statistic calculated why do you have to loop over the list again ???
+        //return statistics.getMin();
         double minAmount = Double.POSITIVE_INFINITY;
         for (Transaction transaction : transactionsOfLastMinute) {
             double amount = transaction.getAmount();
