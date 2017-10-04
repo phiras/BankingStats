@@ -43,7 +43,8 @@ public class BankingRestController {
             response.setStatus(HttpStatus.NO_CONTENT.value());
         }
     }
-
+    // as the response has to be JSON, you have to return JSON format.. I suggestthat you create a toString() in the transactionService and build a JSON body there ..
+    
     @RequestMapping(method = RequestMethod.GET, path = "/statistics", produces = "application/json")
     public final Statistics getTransactionServiceImpl() {
         return transactionService.getStatistics();
