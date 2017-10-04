@@ -16,7 +16,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
 
     public static final long MINUTE_IN_MILL_SECONDS = 60000;
 
-    private static LinkedList<Transaction> transactionsOfLastMinute = new LinkedList<>();
+    private static LinkedList<Transaction> transactionsOfLastMinute = new LinkedList<Transaction>();
     private static Statistics statistics = new Statistics();
 
     /**
@@ -42,6 +42,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      *
      * @return statistics
      */
+    // why do you create anew obect ?? just return the statistics object ..
     public Statistics getStatistics() {
         return new Statistics(statistics);
     }
