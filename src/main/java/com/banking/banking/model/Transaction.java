@@ -50,6 +50,7 @@ public class Transaction {
     }
 
     @Override
+    // this is not a json format .. replace '=' with ':' ..
     public String toString() {
         return "Transaction{" +
                 "amount=" + amount +
