@@ -60,6 +60,7 @@ public class Transaction {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        // you don't have to do the getclass checkit will be handeled by the casting down
         if (o == null || getClass() != o.getClass()) return false;
 
         Transaction that = (Transaction) o;
