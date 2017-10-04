@@ -50,6 +50,7 @@ public class Transaction {
     }
 
     @Override
+    // this is not a json format, if you are aiming to .. replace '=' with ':'.
     public String toString() {
         return "Transaction{" +
                 "amount=" + amount +
@@ -60,10 +61,10 @@ public class Transaction {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        // I think you don't have to compare the class, this will behandled by the casting operation down
         if (o == null || getClass() != o.getClass()) return false;
 
         Transaction that = (Transaction) o;
-
         if (Double.compare(that.amount, amount) != 0) return false;
         return timestamp != null ? timestamp.equals(that.timestamp) : that.timestamp == null;
     }
