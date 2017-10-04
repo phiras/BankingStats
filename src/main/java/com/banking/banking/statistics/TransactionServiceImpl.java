@@ -15,8 +15,8 @@ import java.util.LinkedList;
 public class TransactionServiceImpl implements TransactionService, Refreshable {
 
     public static final long MINUTE_IN_MILL_SECONDS = 60000;
-
-    private static LinkedList<Transaction> transactionsOfLastMinute = new LinkedList<>();
+    
+    private static LinkedList<Transaction> transactionsOfLastMinute = new LinkedList<Transaction>();
     private static Statistics statistics = new Statistics();
 
     /**
@@ -43,6 +43,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      * @return statistics
      */
     public Statistics getStatistics() {
+        // why to create a new object again?? this function has to 'return statistics;' only
         return new Statistics(statistics);
     }
 
@@ -92,6 +93,10 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      * @param amount : the amount of the deleted transaction
      */
     private void removeAmount(double amount) {
+        // why do you create a new variable that youdon't need at all ? you could replace the 2 lines with :  'statistics.setCount(--newCount);'
+        // same things for the rest of the variables...
+        
+        
         long newCount = statistics.getCount() - 1;
         statistics.setCount(newCount);
 
@@ -123,6 +128,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      * @param amount : the amount of the deleted transaction
      */
     private void addAmount(double amount) {
+        // same here, you don't have to create those additional variables..
         long newCount = statistics.getCount() + 1;
         double newSum = statistics.getSum() + amount;
         double newAvg = newSum / newCount;
@@ -141,6 +147,8 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      *
      * @return double: the amount from the highest transaction
      */
+    
+    // you have already the max calculated in the statistics (statistics.getMax()) .. why do you want to loop overthe list ??
     private double getAmountOfMaxTransaction() {
         double maxAmount = 0;
         for (Transaction transaction : transactionsOfLastMinute) {
@@ -156,6 +164,7 @@ public class TransactionServiceImpl implements TransactionService, Refreshable {
      *
      * @return double: minimum amount of transaction from transactions
      */
+    // same here, you alsohave it calculated .. just return it ..
     private double getAmountOfMinTransaction() {
         double minAmount = Double.POSITIVE_INFINITY;
         for (Transaction transaction : transactionsOfLastMinute) {
